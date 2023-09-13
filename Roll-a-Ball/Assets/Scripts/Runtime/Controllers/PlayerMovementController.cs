@@ -1,10 +1,8 @@
-﻿using System;
-using Runtime.Data.ValueObjects;
+﻿using Runtime.Data.ValueObjects;
 using Runtime.Keys;
 using Runtime.Managers;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Runtime.Controllers
 {
@@ -32,26 +30,25 @@ namespace Runtime.Controllers
         {
             GetReferences();
         }
-        internal void OnInputTaken(InputParams inputParams)
+        private void GetReferences()
         {
-            _inputVales = inputParams.InputValues;
+            _playerRb = GetComponent<Rigidbody>();
         }
         private void FixedUpdate()
         {
             MovePlayer();
         }
-        private void GetReferences()
+        internal void SetMovementData(PlayerMovementData movementData)
         {
-            _playerRb = GetComponent<Rigidbody>();
+            _data = movementData;
+        }
+        internal void OnInputTaken(InputParams inputParams)
+        {
+            _inputVales = inputParams.InputValues;
         }
         private void MovePlayer()
         {
             _playerRb.velocity += new Vector3(_inputVales.x, 0, _inputVales.y) * (_data.Speed * Time.fixedDeltaTime);
-        }
-
-        internal void SetMovementData(PlayerMovementData movementData)
-        {
-            _data = movementData;
         }
     }
 }

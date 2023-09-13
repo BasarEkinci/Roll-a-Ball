@@ -20,7 +20,7 @@ namespace Runtime.Managers
         private void Update()
         {
             _inputVales = GetInputValues();
-            if(!Input.anyKey) return;
+            if(!Input.anyKey) return;   
             OnSendInput();
         }
 

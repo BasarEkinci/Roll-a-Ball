@@ -3,6 +3,7 @@ using Runtime.Data.UnityObjects;
 using Runtime.Data.ValueObjects;
 using Runtime.Sıgnals;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Runtime.Managers
 {
@@ -11,8 +12,8 @@ namespace Runtime.Managers
         #region Self Variables
         
         #region Serialized Variables
-
-        [SerializeField] private PlayerMovementController playerMovementController;
+        
+        [SerializeField] private PlayerMovementController movementController;
 
         #endregion
 
@@ -26,24 +27,14 @@ namespace Runtime.Managers
 
         private void Awake()
         {
-            GetPlayerData();
+            GetPlayerData(); 
+            SendDataToControllers();
         }
         
         private void OnEnable()
         {
             SubscribeEvents();
         }
-        
-        private void Start()
-        {
-            SendDataToControllers();
-        }
-        
-        private void OnDisable()
-        {
-            InputSignals.Instance.OnInputTaken -= playerMovementController.OnInputTaken;
-        }
-        
         private void GetPlayerData()
         {
             _data = Resources.Load<CD_Player>("Data/CD_Player").Data;
@@ -51,14 +42,21 @@ namespace Runtime.Managers
 
         private void SendDataToControllers()
         {
-            playerMovementController.SetMovementData(_data.MovementData);
+            movementController.SetMovementData(_data.MovementData);
         }
         
         private void SubscribeEvents()
         {
-            InputSignals.Instance.OnInputTaken += playerMovementController.OnInputTaken;
+            InputSignals.Instance.OnInputTaken += movementController.OnInputTaken;
         }
-
         
+        private void UnsubscribeEvents()
+        {
+            InputSignals.Instance.OnInputTaken -= movementController.OnInputTaken;
+        }   
+        private void OnDisable()
+        {
+            UnsubscribeEvents();
+        }
     }
 }
